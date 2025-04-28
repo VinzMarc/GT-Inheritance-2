@@ -1,84 +1,84 @@
 #include <iostream>
 #include <string>
+#include <cmath>
 using namespace std;
 
-// Base class: Number
 class Number {
 private:
-    string name;
-    int number;
+    int rawValue;
 
 public:
-    Number(const string& name, int number) : name(name), number(number) {}
+    Number(int rawValue) : rawValue(rawValue) {}
 
-    string getName() const { return name; }
-    int getNumber() const { return number; }
+    int getRawValue() const { return rawValue; }
+    void setRawValue(int value) { rawValue = value; }
 };
 
-// Derived class: WholeNumber
 class WholeNumber : public Number {
 public:
-    WholeNumber(const string& name, int number) : Number(name, number) {}
+    WholeNumber(int value) : Number(value) {}
 
-    void displayWholeNumber() const {
-        cout << getName() << " represents the whole number: " << getNumber() << "." << endl;
+    void multiply(WholeNumber otherWhole) {
+        setRawValue(getRawValue() * otherWhole.getRawValue());
+    }
+
+    string toString() const {
+        return to_string(getRawValue());
     }
 };
 
-// Derived class: DecimalNumber
 class DecimalNumber : public Number {
 private:
-    double decimalValue;
+    int decimalPlaces; // Represents the number of decimal places
 
 public:
-    DecimalNumber(const string& name, int number, double decimalValue) : Number(name, number), decimalValue(decimalValue) {}
+    DecimalNumber(int value, int decimalPlaces)
+        : Number(value), decimalPlaces(decimalPlaces) {}
 
-    double getDecimalValue() const { return decimalValue; }
+    int getDecimalPlaces() const { return decimalPlaces; }
+    void setDecimalPlaces(int places) { decimalPlaces = places; }
 
-    void displayDecimalNumber() const {
-        cout << getName() << " represents the decimal number: " 
-             << getNumber() << " with a decimal value of " 
-             << decimalValue << "." << endl;
+    void multiply(DecimalNumber otherDecimal) {
+        setRawValue(getRawValue() * otherDecimal.getRawValue());
+        setDecimalPlaces(getDecimalPlaces() + otherDecimal.getDecimalPlaces());
+    }
+
+    string toString() const {
+        double value = getRawValue() / pow(10.0, getDecimalPlaces());
+        return to_string(value);
     }
 };
 
 int main() {
-    // Using the Number class
-    cout << "--- Number ---" << endl;
-    Number number1("Generic Number", 101);
-    cout << "Name: " << number1.getName() << endl;
-    cout << "Number: " << number1.getNumber() << endl;
+    int wholeNumber1Value, wholeNumber2Value;
+    cout << "Enter first whole number: ";
+    cin >> wholeNumber1Value;
+    cout << "Enter second whole number: ";
+    cin >> wholeNumber2Value;
+
+    WholeNumber wholeNumber1(wholeNumber1Value);
+    WholeNumber wholeNumber2(wholeNumber2Value);
+
+    wholeNumber1.multiply(wholeNumber2);
+    cout << "WholeNumber Result (Multiplication): " << wholeNumber1.toString() << endl;
     cout << endl;
 
-    // Using the WholeNumber class
-    cout << "--- WholeNumber ---" << endl;
-    WholeNumber wholeNumber1("Positive Integer", 102);
-    cout << "Name: " << wholeNumber1.getName() << endl;
-    cout << "Number: " << wholeNumber1.getNumber() << endl;
-    wholeNumber1.displayWholeNumber();
-    cout << endl;
+    int decimal1RawValue, decimal1Places, decimal2RawValue, decimal2Places;
+    cout << "Enter first decimal number's raw value (e.g. 125 for 1.25): ";
+    cin >> decimal1RawValue;
+    cout << "Enter number of decimal places for first decimal: ";
+    cin >> decimal1Places;
 
-    WholeNumber wholeNumber2("Negative Integer", -103);
-    cout << "Name: " << wholeNumber2.getName() << endl;
-    cout << "Number: " << wholeNumber2.getNumber() << endl;
-    wholeNumber2.displayWholeNumber();
-    cout << endl;
+    cout << "Enter second decimal number's raw value (e.g. 20 for 0.20): ";
+    cin >> decimal2RawValue;
+    cout << "Enter number of decimal places for second decimal: ";
+    cin >> decimal2Places;
 
-    // Using the DecimalNumber class
-    cout << "--- DecimalNumber ---" << endl;
-    DecimalNumber decimalNumber1("Decimal Value 1", 104, 104.56);
-    cout << "Name: " << decimalNumber1.getName() << endl;
-    cout << "Number: " << decimalNumber1.getNumber() << endl;
-    cout << "Decimal Value: " << decimalNumber1.getDecimalValue() << endl;
-    decimalNumber1.displayDecimalNumber();
-    cout << endl;
+    DecimalNumber decimalNumber1(decimal1RawValue, decimal1Places);
+    DecimalNumber decimalNumber2(decimal2RawValue, decimal2Places);
 
-    DecimalNumber decimalNumber2("Decimal Value 2", 105, -105.78);
-    cout << "Name: " << decimalNumber2.getName() << endl;
-    cout << "Number: " << decimalNumber2.getNumber() << endl;
-    cout << "Decimal Value: " << decimalNumber2.getDecimalValue() << endl;
-    decimalNumber2.displayDecimalNumber();
-    cout << endl;
+    decimalNumber1.multiply(decimalNumber2);
+    cout << "DecimalNumber Result (Multiplication): " << decimalNumber1.toString() << endl;
 
     return 0;
 }

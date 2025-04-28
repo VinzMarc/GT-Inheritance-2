@@ -29,7 +29,7 @@ public:
 
 class DecimalNumber : public Number {
 private:
-    int decimalPlaces; // Represents the number of decimal places
+    int decimalPlaces;
 
 public:
     DecimalNumber(int value, int decimalPlaces)
